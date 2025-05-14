@@ -17,7 +17,11 @@
         </li>
     </ul>
     <script>
-            document.body.onload = () => {
+            document.body.onload = async () => {
+                var meetingId = await meetsy.setUpAddon();
+
+                alert(meetingId);
+
                 var tokenClient = google.accounts.oauth2.initTokenClient({
                     client_id: '597555850167-knh3eknc2stovfs71d2u0tbjo4s0djh8.apps.googleusercontent.com',
                     scope: [
@@ -26,18 +30,18 @@
                     ].join(' '),
                     callback: (tokenResponse) => {
                         console.log(tokenResponse);
-                        console.log(tokenResponse.access_token);
+                        console.log(tokenResponse.access_token)
 
-                        var participants = fetchMeetingParticipants(tokenResponse.access_token, 'vyf-krmw-zbp');
+                        var participants = fetchMeetingParticipants(tokenResponse.access_token, meetingId);
                         console.log(participants);
                         // tokenResponse.access_token contains your Bearer token
                     }
                 });
+
                 document.getElementById('auth-button').addEventListener('click', () => {
                     tokenClient.requestAccessToken();
                 });
 
-                meetsy.setUpAddon();
             };
 
 
@@ -58,15 +62,17 @@
 
                 // 1) Get the space to find its activeConference record name
                 const spaceRes = await fetch(
-                    `https://meet.googleapis.com/v2/spaces/${encodeURIComponent(meetSpaceId)}`,
+                    'https://meet.googleapis.com/v2/conferenceRecords?filter=' + encodeURIComponent(`space.name="${meetSpaceId}"`),
                     { method: 'GET', headers }
                 );
                 if (!spaceRes.ok) {
                     throw new Error(`Failed to fetch space ${meetSpaceId}: ${spaceRes.status}`);
                 }
                 const spaceData = await spaceRes.json();
+                console.log(spaceData);
+                debugger;
                 // activeConference.name is like "conferenceRecords/XYZ"
-                const recordName = spaceData.activeConference?.name;
+                const recordName = spaceData.conferenceRecords[0].name;
                 if (!recordName) {
                     throw new Error(`No active conference found for space ${meetSpaceId}`);
                 }
