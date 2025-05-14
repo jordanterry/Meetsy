@@ -25,7 +25,7 @@ module.exports =  {
         ],
     },
     plugins: [
-        new EnvironmentPlugin(['CLOUD_PROJECT_NUMBER', 'MAIN_STAGE_URL', 'SIDE_PANEL_URL']),
+        //new EnvironmentPlugin(['CLOUD_PROJECT_NUMBER', 'MAIN_STAGE_URL', 'SIDE_PANEL_URL']),
         new HtmlWebpackPlugin({
             filename: 'MainStage.html',
             template: './src/MainStage.html',
